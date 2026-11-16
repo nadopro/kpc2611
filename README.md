@@ -34,13 +34,13 @@ DisableIS 부분 추가
 ```php
 <?php
 /* Authentication type and info */
-$cfg['Servers'][$i]['auth_type'] = 'cookie';
+$cfg['Servers'][$i]['auth_type'] = 'cookie'; // 수정
 $cfg['Servers'][$i]['user'] = 'root';
 $cfg['Servers'][$i]['password'] = '';
 $cfg['Servers'][$i]['extension'] = 'mysqli';
 $cfg['Servers'][$i]['AllowNoPassword'] = true;
 $cfg['Lang'] = '';
-$cfg['Servers'][$i]['DisableIS'] = true;
+$cfg['Servers'][$i]['DisableIS'] = true; // 추가
 ?>
 ```
 ### 1.1.2 기타 프로그램 
