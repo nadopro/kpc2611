@@ -234,4 +234,14 @@ $pages = [
 
 이때, injection.php파일을 만들어야 해.
 users 테이블에서 아이디와 비번이 같은지 로그인하는 화면이야.
+
+id, pass를 입력받아서 "로그인"을 수행하면, 
+조금 전 만들었던 users 테이블과 비교하는거야.
+injection.php 파일은 mysqli_query()와 같은 함수로 질의 하고 싶고, 인젝션 공격을 테스트하기 위한 코드를 만드는 것이 목적이야.
+
+$sql = "select * from users where id='$id' and pass='$pass' "; 와 같은 형식의 코드를 사용해 줘.
+
+index.php 파일에서 세션을 저장하기 위해 sess라는 폴더를 만들었어.
+id, name, level
+즉 세션처리를 위해 index.php파일과 injection.php 파일을 제시해 줘.
 ```
