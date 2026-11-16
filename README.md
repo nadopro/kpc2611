@@ -251,3 +251,41 @@ injection.php 파일에는 로그아웃 버튼까지 동작하도록 해 줘.
 주소창 
 
 javascript:alert(document.cookie);
+
+**성능**
+```
+connectDB();
+
+for(; ;)
+{
+    insert into ...();
+}
+
+close()
+
+
+for(; ;)
+{
+    connectDB();
+    insert into ...();
+    close();
+}
+
+
+char *p = (char *) malloc(1000);
+free(p);
+
+if(p)
+{
+    printf("Yes");
+}else
+{
+    printf("No");
+}
+
+
+for(i)
+{
+    fopen(i.txt)
+}
+```
