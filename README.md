@@ -174,3 +174,32 @@ init.php 파일은 일단 다음과 같이 구성할거야.
 KPC 보안 프로그래밍 과정
 
 ```
+
+* Q2: users table schema 만들기*
+```
+    mysql 테이블 스키마를 만들고 싶어.
+    table name : users
+    필요한 정보 : idx, id, name, pass, level
+    idx : 정수, 자동증가, primary key
+    id : text, unique,
+    name : 사용자 이름,
+    pass : 50글자의 텍스트, 암호화 하지 않음
+    level : 1(일반회원), 2(우수회원), 중간 번호는 예비, 9(관리자)
+
+    
+
+```
+
+* Q3: cmd 체크 *
+```
+조금전 index.php 다음과 같이 수정했어.
+$pages = [
+    '시큐어코딩' => ['injection', 'injection2', 'injection3'],
+    'menu2' => ['menu2-1', 'menu2-2'],
+    'menu3' => ['menu3-1', 'menu3-2'],
+];
+
+
+이때, injection.php파일을 만들어야 해.
+users 테이블에서 아이디와 비번이 같은지 로그인하는 화면이야.
+```

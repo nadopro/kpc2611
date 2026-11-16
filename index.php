@@ -18,7 +18,7 @@ if (!is_string($cmd) || !preg_match('/\A[a-zA-Z0-9_-]+\z/D', $cmd)) {
 }
 
 $pages = [
-    'menu1' => ['menu1-1', 'menu1-2', 'menu1-3'],
+    '시큐어코딩' => ['injection', 'injection2', 'injection3'],
     'menu2' => ['menu2-1', 'menu2-2'],
     'menu3' => ['menu3-1', 'menu3-2'],
 ];
