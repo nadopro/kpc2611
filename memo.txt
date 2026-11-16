@@ -1,0 +1,54 @@
+insert into users (id, name, dept, score) values ('-- m[ao]t');
+insert into users (id, name, dept, score) values ('-- 010-[0-9]{4}-[0-9]{4}');
+insert into users (id, name, dept, score) values ('-- match, mapping, mother, mat');
+insert into users (id, name, dept, score) values ('-- 홍길동 이순신 세종대왕 a강b감c찬');
+insert into users (id, name, dept, score) values ('-- 전화번호010-1a11-1111010-1234-5678test');
+insert into users (id, name, dept, score) values ('-- match, mapping, mother, ');
+insert into users (id, name, dept, score) values ('-- 홍길동 이순신 세종대왕 a강b감c찬');
+insert into users (id, name, dept, score) values ('-- 전화번호010-1a11-1111010-1234-5678test');
+insert into users (id, name, dept, score) values ('-- match, mapping, mother, ');
+insert into users (id, name, dept, score) values ('-- 홍길동 이순신 세종대왕 a강b감c찬');
+insert into users (id, name, dept, score) values ('-- 전화번호010-1a11-1111010-1234-5678test');
+insert into users (id, name, dept, score) values ('');
+insert into users (id, name, dept, score) values ('insert into users (id, name, dept, score) valuse 
+insert into users (id, name, dept, score) values ('    ('6', '황문원', '건축공학과', '74');');
+insert into users (id, name, dept, score) values ('\t -> ','
+insert into users (id, name, dept, score) values ('$ -> ');
+insert into users (id, name, dept, score) values ('^ -> insert into users (id, name, dept, score) values ('
+
+
+insert into users (id, name, dept, score) values ('6','황문원','건축공학과','74');
+insert into users (id, name, dept, score) values ('7','서길민','소프트웨어학과','64');
+insert into users (id, name, dept, score) values ('8','김종봉','경영학과','80');
+insert into users (id, name, dept, score) values ('9','윤응석','건축공학과','60');
+insert into users (id, name, dept, score) values ('10','장재중','경영학과','80');
+insert into users (id, name, dept, score) values ('11','이인윤','전자공학과','79');
+insert into users (id, name, dept, score) values ('12','유문의','소프트웨어학과','85');
+insert into users (id, name, dept, score) values ('13','강응인','전자공학과','80');
+insert into users (id, name, dept, score) values ('14','최순근','전자공학과','84');
+insert into users (id, name, dept, score) values ('15','이봉지','사회학과','85');
+insert into users (id, name, dept, score) values ('16','오정명','소프트웨어학과','84');
+insert into users (id, name, dept, score) values ('17','조광근','사회학과','79');
+insert into users (id, name, dept, score) values ('18','김지하','건축공학과','63');
+insert into users (id, name, dept, score) values ('19','문동종','영문학과','71');
+insert into users (id, name, dept, score) values ('20','조영일','영문학과','89');
+insert into users (id, name, dept, score) values ('21','유관복','사회학과','60');
+insert into users (id, name, dept, score) values ('22','강정서','사회학과','63');
+insert into users (id, name, dept, score) values ('23','홍재세','컴퓨터공학과','66');
+insert into users (id, name, dept, score) values ('24','박준준','영문학과','63');
+insert into users (id, name, dept, score) values ('25','한인진','소프트웨어학과','70');
+insert into users (id, name, dept, score) values ('26','김순수','영문학과','73');
+insert into users (id, name, dept, score) values ('27','한준종','영문학과','76');
+insert into users (id, name, dept, score) values ('28','서병익','건축공학과','60');
+insert into users (id, name, dept, score) values ('29','이호신','경영학과','62');
+insert into users (id, name, dept, score) values ('30','조동민','사회학과','70');
+insert into users (id, name, dept, score) values ('31','홍덕윤','경영학과','79');
+insert into users (id, name, dept, score) values ('32','정명근','소프트웨어학과','89');
+insert into users (id, name, dept, score) values ('33','강승근','건축공학과','80');
+insert into users (id, name, dept, score) values ('34','송수봉','영문학과','77');
+insert into users (id, name, dept, score) values ('35','조지계','건축공학과','82');
+insert into users (id, name, dept, score) values ('36','박경종','컴퓨터공학과','75');
+insert into users (id, name, dept, score) values ('37','오주성','영문학과','60');
+insert into users (id, name, dept, score) values ('38','강만필','사회학과','81');
+insert into users (id, name, dept, score) values ('39','박세석','건축공학과','85');
+insert into users (id, name, dept, score) values ('40','이만동','건축공학과','69');

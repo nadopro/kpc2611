@@ -21,7 +21,28 @@
 
 - [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
 
+* 만약 mysql 사용자 계정 추가가 안되는 경우 *
 
+C:\xampp\phpMyAdmin\config.inc.php 파일의 아래와 같이
+
+cookie 부분 수정, 
+
+DisableIS 부분 추가
+
+후, Apache 재시작
+
+```php
+<?php
+/* Authentication type and info */
+$cfg['Servers'][$i]['auth_type'] = 'cookie';
+$cfg['Servers'][$i]['user'] = 'root';
+$cfg['Servers'][$i]['password'] = '';
+$cfg['Servers'][$i]['extension'] = 'mysqli';
+$cfg['Servers'][$i]['AllowNoPassword'] = true;
+$cfg['Lang'] = '';
+$cfg['Servers'][$i]['DisableIS'] = true;
+?>
+```
 ### 1.1.2 기타 프로그램 
 
 [download burp suite community edition](https://www.google.com/search?q=download+burp+suite+community+edition&oq=download+burp+suite+&gs_lcrp=EgZjaHJvbWUqBwgBEAAYgAQyCAgAEEUYHhg5MgcIARAAGIAEMgYIAhAAGB4yBggDEAAYHjIGCAQQABgeMgYIBRAAGB4yBggGEAAYHjIGCAcQABgeMgYICBAAGB4yBggJEAAYHtIBCDk4MzlqMGo0qAIAsAIB&sourceid=chrome&source=chrome.ob&ie=UTF-8)
