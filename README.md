@@ -289,3 +289,13 @@ for(i)
     fopen(i.txt)
 }
 ```
+
+**Q3 : save id**
+
+```
+(injection2.php 첨부)
+첨부한 파일을 수정해서, id, pass를 저장하는 기능을 만들고 싶어.
+목표 파일은 saveid.php 이야.
+저장한 아이디와 비밀번호는 localStorage에 저장하고 싶어.
+체크박스로 저장기능을 선택하도록 saveid.php 파일을 제시해 줘.
+```
