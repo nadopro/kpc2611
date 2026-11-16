@@ -244,4 +244,10 @@ $sql = "select * from users where id='$id' and pass='$pass' "; 와 같은 형식
 index.php 파일에서 세션을 저장하기 위해 sess라는 폴더를 만들었어.
 id, name, level
 즉 세션처리를 위해 index.php파일과 injection.php 파일을 제시해 줘.
+injection.php 파일에는 로그아웃 버튼까지 동작하도록 해 줘.
 ```
+**세션확인**
+
+주소창 
+
+javascript:alert(document.cookie);
