@@ -7,9 +7,9 @@
 
 [download xampp](https://www.google.com/search?q=download+xampp&oq=download+xampp&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQABgeMgYIAhAAGB4yBggDEAAYHjIGCAQQABgeMgYIBRAAGB4yBggGEAAYHjIGCAcQABgeMgYICBAAGB4yBggJEAAYHtIBCTM4ODNqMGoxNagCCLACAQ&sourceid=chrome&source=chrome.rb&ie=UTF-8)
 
-> 실행할 때 "Windows의 PC 보호" 파란 창이 뜨면,
-> "추가정보" 클릭 후, 실행
-> 기본 설정, 설치 위치 c:/xampp
+> 실행할 때 "Windows의 PC 보호" 파란 창이 뜨면,  
+> "추가정보" 클릭 후, 실행  
+> 기본 설정, 설치 위치 c:/xampp  
 
 - 설치 확인
 [http://localhost](http://localhost)
