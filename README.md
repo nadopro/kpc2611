@@ -129,7 +129,7 @@ match, mapping, mother,
 
 모든 파일은 index.php 파일을 통과
 
-* Q1 : 골결 *
+* Q1 : 골격 *
 ```
 다음을 만족하는 index.php 파일을 만들어줘.
 HTML5와 Bootstrap5를 이용해 반응형 홈페이지를 만들거야.
@@ -175,7 +175,7 @@ KPC 보안 프로그래밍 과정
 
 ```
 
-* Q2: users table schema 만들기*
+**Q2: users table schema 만들기**
 ```
     mysql 테이블 스키마를 만들고 싶어.
     table name : users
@@ -186,8 +186,40 @@ KPC 보안 프로그래밍 과정
     pass : 50글자의 텍스트, 암호화 하지 않음
     level : 1(일반회원), 2(우수회원), 중간 번호는 예비, 9(관리자)
 
-    
+    1. 스키마를 만들어줘.
+    2. 아이디 10개를 만드는 query를 만들어줘.
+    admin(관리자), test(테스트)
+    나머지는 조선시대 역사 인물 이름으로 무작위로 만들어줘. 모든 비밀번호는 abcd로 세팅하고,
+    관리자만 9번, 나머지는 1번을 level로 세팅해
+```
+**결과**
+```sql
+CREATE TABLE users (
+    idx INT NOT NULL AUTO_INCREMENT,
+    id VARCHAR(50) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    pass VARCHAR(50) NOT NULL,
+    level TINYINT UNSIGNED NOT NULL DEFAULT 1,
+    PRIMARY KEY (idx),
+    UNIQUE KEY uk_users_id (id),
+    CONSTRAINT chk_users_level
+        CHECK (level BETWEEN 1 AND 9)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
 
+
+  INSERT INTO users (id, name, pass, level) VALUES
+('admin',      '관리자',   'abcd', 9),
+('test',       '테스트',   'abcd', 1),
+('sejong',     '세종대왕', 'abcd', 1),
+('yi_sunsin',  '이순신',   'abcd', 1),
+('jeong_yakyong', '정약용', 'abcd', 1),
+('heogjun',    '허준',     'abcd', 1),
+('shinsaimdang', '신사임당', 'abcd', 1),
+('kim_hongdo', '김홍도',   'abcd', 1),
+('janggyeong', '장영실',   'abcd', 1),
+('hwangjini',  '황진이',   'abcd', 1);
 ```
 
 * Q3: cmd 체크 *
