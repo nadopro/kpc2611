@@ -118,11 +118,11 @@ match, mapping, mother,
 ```
 * 용어 설명 *
 
-X : Ex, Windows Expert
-XML : Ex
-X : Cross Site Scripting : XSS
-X : AI Transmission, Xmit
-N : En, Nginx
+> X : Ex, Windows Expert  
+> XML : Ex  
+> X : Cross Site Scripting : XSS  
+> X : AI Transmission, Xmit  
+> N : En, Nginx  
 
 
 ## 3. 홈페이지 구조 (index.php, db.php)
