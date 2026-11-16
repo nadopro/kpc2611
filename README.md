@@ -99,3 +99,31 @@ match, mapping, mother,
 전화번호010-1a11-1111010-1234-5678test
 
 ```
+
+* SQL Injection *
+```
+    프로그래머들의 습성을 이용
+
+    $id = "test";
+    $pass = "1111";
+
+    $sql = "select * from users where id='$id' and pass='$pass' ";
+
+
+    "select * from users where id='test' and pass='1111' ";
+    id : xxx' or 2>1 limit 1, 1 -- 
+    pass : zzz 
+    "select * from users where id='xxx' or 2>1 1, 1 -- ' and pass='zzz' ";
+
+```
+* 용어 설명 *
+
+X : Ex, Windows Expert
+XML : Ex
+X : Cross Site Scripting : XSS
+X : AI Transmission, Xmit
+N : En, Nginx
+
+
+## 3. 홈페이지 구조 (index.php, db.php)
+
