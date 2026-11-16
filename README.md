@@ -3,6 +3,9 @@
 # 1일차
 
 ## 1.1 실습용 프로그램 다운로드
+
+## https://github.com/nadopro/kpc2611
+
 [github 실시간 코드 배포](https://github.com/nadopro/kpc2611)
 
 [download xampp](https://www.google.com/search?q=download+xampp&oq=download+xampp&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQABgeMgYIAhAAGB4yBggDEAAYHjIGCAQQABgeMgYIBRAAGB4yBggGEAAYHjIGCAcQABgeMgYICBAAGB4yBggJEAAYHtIBCTM4ODNqMGoxNagCCLACAQ&sourceid=chrome&source=chrome.rb&ie=UTF-8)
