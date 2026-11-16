@@ -127,3 +127,50 @@ match, mapping, mother,
 
 ## 3. 홈페이지 구조 (index.php, db.php)
 
+모든 파일은 index.php 파일을 통과
+
+* Q1 : 골결 *
+```
+다음을 만족하는 index.php 파일을 만들어줘.
+HTML5와 Bootstrap5를 이용해 반응형 홈페이지를 만들거야.
+상단에는 Navbar를 이용해서 메뉴를 구성할거야.
+메뉴에는 menu1, menu2, menu3이 있어.
+menu1에는 menu1-1, menu1-2, menu1-3,
+menu2에는 menu2-1, menu2-2,
+menu3에는 menu3-1, menu3-2로 dropdown형태로 구성할거야.
+
+내용(body) 부분에는 하단의 cmd 결정에 의해 화면을 표시할거야.
+하단에는 사이트 정보가 있는데,
+"한국생산성본부(KPC)
+정보보호책임자: 홍길동(help@kpc.or.kr)"
+이렇게 구성되어 있어.
+
+만약에 내용이 너무 적더라도 하단의 사이트정보는 항상 화면의  맨 아래에 배치되도록 구성해 줘.
+
+메뉴부분은 진한 파스텔톤의 녹색 계열로 만들고,
+화면은 연한 파스텔톤 녹색 계열로 만들고 싶어.
+
+맨 앞에서는 db.php파일을 추가해 줘.
+db.php 파일은 mysql에 접속하는 코드를 함수형태로 만들거야.
+index.php에서는 다음과 같이 호출해서 접속을 한번에 해결할거야.
+$conn = connectDB(); 
+
+connectDB()를 위해서
+$db name = secure
+$db user = secure
+$db pass = 1111
+
+mysqli()를 사용할거야.
+
+모든 파일은 index.php?cmd=test 와 같은 형태로 cmd값으로
+동작을 결정할거야.
+
+GET방식으로 넘어온 $cmd가 없으면
+기본값으로 init.php를 본문에 포함할거야.
+만약 cmd=test이면 test.php 파일을 추가하도록 코드를 만들거야.
+
+init.php 파일은 일단 다음과 같이 구성할거야.
+
+KPC 보안 프로그래밍 과정
+
+```
