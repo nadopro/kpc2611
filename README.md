@@ -29,4 +29,22 @@
 [download zaproxy](https://www.zaproxy.org/)
 
 
+## 2. Regular Expression
 
+```
+    [abc]  : a, b, c 중에 하나  
+    ls *.[ch]  
+    [abc]{2} : a, b, c중에서 골라서 2개
+    ac, cc, ca, da  
+    [abc]{2,4} : 2~4글자
+    aaa, aca, bca
+    [abc....xyz]{4,10}
+    test, desktop, secure
+    [a-zA-Z0-9]{4,10}
+    Test, Test12, abcd343
+
+    ^010-[0-9]{4}-[0-9]{4}$
+    010-123a-5678Test010-1111-2222Test
+    
+
+```
