@@ -11,10 +11,10 @@
 > "추가정보" 클릭 후, 실행  
 > 기본 설정, 설치 위치 c:/xampp  
 
-- 설치 확인
-[http://localhost](http://localhost)
+### 1.1.1 설치 확인
+- [http://localhost](http://localhost)
 
-[http://localhost/phpmyadmin](http://localhost/phpmyadmin)
+- [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
 
 [download visual code](https://www.google.com/search?q=download+visual+code&sca_esv=c0e41f13f2bcea41&sxsrf=AKL5yDirYY0Z88GN1X9mjGqp8aZVOsPQuQ%3A1794786927285&ei=b0b6as72EOvk2roP5JW12Qs&biw=1289&bih=566&uact=5&oq=download+visual+code&gs_lp=Egxnd3Mtd2l6LXNlcnAiFGRvd25sb2FkIHZpc3VhbCBjb2RlMgUQABiABDIEEAAYHjIEEAAYHjIEEAAYHjIEEAAYHjIEEAAYHjIEEAAYHjIEEAAYHjIEEAAYHjIEEAAYHkiBMVCTF1ioMHACeAGQAQCYAWSgAckIqgEEMTEuMbgBA8gBAPgBAZgCDqACvAnCAgoQABhHGNYEGLADwgIXEC4Y3AYYuAYY2gYY2AIYyAMYsAPYAQHCAgoQABiABBiKBRhDwgIGEAAYHhgKmAMAiAYBkAYQugYGCAEQARgZkgcDNy43oAf_QbIHAzUuN7gHqgnCBwcwLjUuNS40yAdMgAgB&sclient=gws-wiz-serp)
 
