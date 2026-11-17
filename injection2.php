@@ -43,9 +43,10 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pass = str_replace('"', "", $pass);
 
     // SQL Injection 실습을 위한 취약 코드
-    //$sql = "select * from users where id='$id' and pass='$pass' ";
+    $sql = "select * from users where id='$id' and pass='$pass' ";
 
-    echo "$sql<br>";
+    //echo "$sql<br>";
+    
     try {
         $result = mysqli_query($conn, $sql);
         $user = $result ? mysqli_fetch_assoc($result) : null;
