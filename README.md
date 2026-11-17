@@ -299,3 +299,53 @@ for(i)
 저장한 아이디와 비밀번호는 localStorage에 저장하고 싶어.
 체크박스로 저장기능을 선택하도록 saveid.php 파일을 제시해 줘.
 ```
+
+
+# 2일차
+
+## 2.1 IP Address
+
+```
+1.2.3.4 : 0.0.0.0 ~ 255.255.255.255
+
+첫자리
+A class
+0000 0000 ~ 0111 1111 : 0~127
+
+100.*.*.* : 1,600만
+Special Purpose : 10.*.*.*, 127.*.*.*(loop back)
+
+B class
+10xxx : 1000 0000 ~ 1011 1111 : 128~191
+153.14.*.* : 65,536
+SP: 172.*
+
+C class
+11xx : 1100 0000 ~ 1101 1111 : 192 ~ 220
+
+200.54.13.*
+SP : 192.168.*.*
+
+200.100.13.*
+
+200.100.13.0 : 방 이름(network name)
+200.100.13.255 : broadcast address, 방송
+
+```
+
+**C code**
+```c
+void copy(char *ptr) {
+    char buf[100];
+    strcpy(ptr, buf);
+    printf("buf = %s\n", ptr);
+    print(buf);
+}
+// ./test "Hello World"
+// ./test $(python print("A"* 10 + "B" * 20))
+int main(int argc, char **argv) {
+    copy(argv[1]);
+}
+
+
+```
