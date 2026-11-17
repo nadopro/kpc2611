@@ -141,7 +141,9 @@
       width=w; height=h;
       svg.attr('viewBox',`0 0 ${width} ${height}`);
       simulation.force('center',d3.forceCenter(width/2,height/2));
-      simulation.alpha(0.25).restart();
+      simulation
+        .alpha(0.25)
+        .restart();
     }).observe(host);
   }
 })();
