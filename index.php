@@ -21,7 +21,7 @@ if (!is_string($cmd) || !preg_match('/\A[a-zA-Z0-9_-]+\z/D', $cmd)) {
 }
 
 $pages = [
-    '시큐어코딩' => ['injection', 'injection2', 'saveid'],
+    '시큐어코딩' => ['injection', 'injection2', 'saveid', 'saveid2'],
     'menu2' => ['menu2-1', 'menu2-2'],
     'menu3' => ['menu3-1', 'menu3-2'],
 ];
