@@ -347,5 +347,29 @@ int main(int argc, char **argv) {
     copy(argv[1]);
 }
 
+a()
+    a1()
+        a11()
+    a2()
+b()
+    b1()
+    b2()
+```
 
+**유선인터넷과 무선인터넷**
+
+```
+유선 인터넷
+
+고속 인터넷 -> 초고속 인터넷 -> 광인터넷
+ADSL : Asymetric Digital Subscriber Line 
+    Up/Down load 의 비대칭
+
+무선 인터넷
+1G -> NG(2G) -> 3G(iPhone, 010 통합)
+3.5G : 영상통화, KT Show, SKT T, LGT oz
+4G : LTE, 목표(FHD), mp4
+    LET-A : 무선 속도 > 유선 속도
+5G : 목표(UHD)
+6G : 1G/sec, 자율주행 자동차
 ```
