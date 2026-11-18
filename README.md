@@ -764,7 +764,7 @@ thread는 원본글 새글은 "A"야.
 A에 댓글이 달리는 순서대로 AA, AB, AC, AD..
 ABC에는 ABCA, ABCB, ABCC,... 
 
-목록을 가져올 때 order by notice desc, gid asc, threa asc 순으로 가져오고 싶은거야.
+목록을 가져올 때 order by notice desc, gid desc, threa asc 순으로 가져오고 싶은거야.
 
 
 3. 글보기(mode = show)
