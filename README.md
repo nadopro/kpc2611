@@ -588,3 +588,27 @@ CREATE TABLE log (
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;
 ```
+
+
+**iot**
+
+```
+mysql 스키마를 만들어줘.
+table name : iot
+idx: integer, auto increment, primary key
+temp : float
+hum : float
+time : datetime
+```
+**결과**
+```sql
+CREATE TABLE iot (
+    idx INT NOT NULL AUTO_INCREMENT,
+    temp FLOAT DEFAULT NULL,
+    hum FLOAT DEFAULT NULL,
+    time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (idx)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
+```
