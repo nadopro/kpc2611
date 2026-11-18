@@ -705,6 +705,9 @@ CREATE TABLE board (
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;
+
+alter table board add ip char(20) default '0.0.0.0';
+
 ```
 
 ```
@@ -721,4 +724,25 @@ VALUES
     ('admin', '관리', 1, 'A', '테스트 제목1', '테스트 내용1'),
     ('admin', '관리', 2, 'A', '테스트 제목2', '테스트 내용2'),
     ('admin', '관리', 3, 'A', '테스트 제목3', '테스트 내용3');
+```
+
+**게시판 만들기**
+```
+board.php파일을 다음 조건에 맞춰 만들어 줘.
+index.php?cmd=board와 같이 사용하는데,
+게시판의 기능을 위해 mode를 사용할거야.
+index.php?cmd=board&mode=show 와 같은 형태로 동작을 결정해.
+mode가 없는 경우에는 mode="list"를 기본으로 해줘.
+동작에는 
+목록보기(mode = list), 내용보기(mode = show),
+글쓰기(mode = write), 삭제하기(mode=delete) 등이 있어.
+
+1. 글목록 보기
+순서, 제목, 작성자, 파일, 작성일, 읽음 이 표형태로 출력돼.
+스마트폰 같은 디바이스에서는 제목과 작성자만 보여줘.
+내용을 클릭하면 글보기로 이동해.
+화면 하단에는 "글쓰기" 버튼이 있고, 클릭하면 글쓰기로 이동해. 한페이지당 10개씩 보여주고, 그 이상일때는 pagenation으로 표시해 줘.
+
+2. 글보기(mode = show)
+
 ```
