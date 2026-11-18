@@ -73,9 +73,25 @@ if ($cmd !== null && !is_file($pageFile)) {
     </style>
 </head>
 <body class="d-flex flex-column">
-<?php //phpinfo(); ?>
 
-    <nav class="navbar navbar-expand-lg navbar-dark site-navbar" aria-label="주 메뉴">
+<?php
+    $ip = $_SERVER['REMOTE_ADDR'] ;
+    $ip1 = rand(0,255);
+    $ip2 = rand(0,255);
+    $ip3 = rand(0,255);
+    $ip4 = rand(0,255);
+    $ip = $ip1 . "." . $ip2 . "." . $ip3 . "." . $ip4;
+    
+    $work = $_SERVER['QUERY_STRING'] ;
+    $id = $_SESSION['id'];
+ 
+    $sql = "INSERT INTO log (ip, id, work, time)
+                values ('$ip', '$id', '$work', now()) ";
+    mysqli_query($conn, $sql);
+                
+               
+?>
+       <nav class="navbar navbar-expand-lg navbar-dark site-navbar" aria-label="주 메뉴">
         <div class="container">
             <a class="navbar-brand fw-semibold" href="index.php">KPC Secure Coding</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
