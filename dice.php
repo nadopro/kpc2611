@@ -6,7 +6,7 @@ $dice = array_fill(1, 6, 0);
 $attempts = 6;
 $executed = false;
 $error = '';
-$maxAttempts = 1000000;
+$maxAttempts = 10000000000;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['run_dice'])) {
     $submitted = $_POST['attempts'] ?? '';
