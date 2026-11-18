@@ -1,4 +1,7 @@
-Options -ExecCGI
-<FilesMatch "\.(php[0-9]?|phtml|phar|cgi|pl|asp|aspx|jsp)$">
+Options -ExecCGI -Indexes
+<FilesMatch "\.(php[0-9]*|phtml|phar|cgi|pl|py|rb|asp|aspx|jsp|jspx|shtml|sh|bat|cmd|ps1|exe|dll|htaccess|htpasswd)$">
 Require all denied
+</FilesMatch>
+<FilesMatch "\.(html?|svg|xml|js|mjs)$">
+ForceType application/octet-stream
 </FilesMatch>
