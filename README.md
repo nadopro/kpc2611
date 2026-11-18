@@ -556,3 +556,35 @@ users 테이블의 비밀번호와 이 텍스트가 같은지 비교하는 코�
 
 netstat -an
 ```
+
+# 3일차
+
+## 3.1 Log
+
+- Log을 위한 테이블 생성
+
+```
+1.2.3.4 ==> SKB, GPS
+다음과 같은 Mysql 스키마를 만들고 싶어.
+table name : log
+필드 정보
+ idx: integer, auto_increment, primary key
+ ip: ipv4 주소
+ id: 사용자의 아이디
+ work:varchar(255)
+ time: datetime
+```
+
+**결과***
+```sql
+CREATE TABLE log (
+    idx INT NOT NULL AUTO_INCREMENT,
+    ip VARCHAR(15) NOT NULL,
+    id VARCHAR(100) NOT NULL,
+    work VARCHAR(255) NOT NULL,
+    time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (idx)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
+```

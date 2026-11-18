@@ -73,6 +73,8 @@ if ($cmd !== null && !is_file($pageFile)) {
     </style>
 </head>
 <body class="d-flex flex-column">
+<?php //phpinfo(); ?>
+
     <nav class="navbar navbar-expand-lg navbar-dark site-navbar" aria-label="주 메뉴">
         <div class="container">
             <a class="navbar-brand fw-semibold" href="index.php">KPC Secure Coding</a>
