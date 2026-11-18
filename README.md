@@ -706,3 +706,19 @@ CREATE TABLE board (
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;
 ```
+
+```
+만들어진 테이블에 게시글 3개를 작성해줘.
+작성자: admin, 이름 : 관리
+제목 : 테스트 제목1 ~ 테스트 제목3
+내용: 테스트 내용1 ~ 테스트 내용3
+gid = 1, 2, 3
+thread= 모두 A
+
+INSERT INTO board
+    (id, name, gid, thread, title, content)
+VALUES
+    ('admin', '관리', 1, 'A', '테스트 제목1', '테스트 내용1'),
+    ('admin', '관리', 2, 'A', '테스트 제목2', '테스트 내용2'),
+    ('admin', '관리', 3, 'A', '테스트 제목3', '테스트 내용3');
+```
