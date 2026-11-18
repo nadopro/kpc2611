@@ -899,3 +899,5 @@ curl을 이용해서 처리해 줘.
 
 
 ```
+
+C:\xampp\php\php.exe -n -d extension_dir="C:\xampp\php\ext" -d extension=curl -m
