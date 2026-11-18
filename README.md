@@ -652,3 +652,13 @@ level은 무조건 1번이기 때문에 별도로 입력받을 필요가 없다.
 비밀번호는 두번 입력받아야 해.
 회원가입을 하는 경우, 실제로 가입까지 해줘.
 ```
+
+WYSIWYG : What You See Is What You Get
+
+```
+editor.php 파일을 만들고 싶어.
+게시판의 글쓰기 화면을 만들건데,
+WYSYWIG 게시판 형태로 만들거야.
+Bold, Italic, Underline 만 샘플로 만들거야.
+이 세개의 버튼은 Material-icons를 활용해 줘.
+```
