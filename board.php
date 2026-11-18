@@ -263,7 +263,7 @@ if ($boardMode === 'list'):
           </td>
           <td><?= board_h($r['name']) ?></td>
           <td class="board-hide-mobile text-center"><?= $r['file'] ? '📎' : '' ?></td>
-          <td class="board-hide-mobile"><?= board_h($r['time']) ?></td>
+          <td class="board-hide-mobile"><?= date('Y-m-d', strtotime((string)$r['time'])) === date('Y-m-d') ? date('H:i', strtotime((string)$r['time'])) : date('Y-m-d', strtotime((string)$r['time'])) ?></td>
           <td class="board-hide-mobile text-center"><?= (int)$r['hit'] ?></td>
         </tr>
       <?php endforeach; ?>
