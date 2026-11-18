@@ -848,3 +848,54 @@ $randname1$randname2$randnam3
 출신지는 서울, 경기, 충청, 전라, 경상, 제주 중에서 하나를  무작위로 뽑아.
 최종 결과는 순서, 이름, 생년, 지역 순으로 표 형태로 정리해
 ```
+
+**crawling**
+
+```
+https://www.snu.ac.kr/snunow/press?page=1
+이 사이트를 크롤링해서 게시글의 제목을 가져와 출력하는 프로그램을 crawling.php 파일로 만들고 싶어.
+
+page는 1페이지부터 10페이지까지만 순차적으로 가져올거야.
+
+소스보기를 했을 때 다음과 같이 되어 있어.
+
+         <tr>
+            <td class="col-title new file">
+              <a href="/snunow/press?md=v&bbsidx=179513">
+                <span class="clip"><span class="txt">데이터사이언스대학원 김형신 교수팀, 인간 신경계 모사한 센서 중심 차세대 물리 AI 구조 개발</span></span>
+                <span class="icon-new">새글</span>
+                <span class="icon-file">첨부파일 있음</span>
+              </a>
+            </td>
+            <td class="col-date">2026. 11. 16.</td>
+          </tr>
+          <tr>
+            <td class="col-title new file">
+              <a href="/snunow/press?md=v&bbsidx=179486">
+                <span class="clip"><span class="txt">농생대, 2026년도 상록농업생명과학대상 등 시상식</span></span>
+                <span class="icon-new">새글</span>
+                <span class="icon-file">첨부파일 있음</span>
+              </a>
+            </td>
+            <td class="col-date">2026. 11. 16.</td>
+          </tr>
+
+          ...
+
+이중에서 
+
+데이터사이언스대학원 김형신 교수팀, 인간 신경계 모사한 센서 중심 차세대 물리 AI 구조 개발
+
+농생대, 2026년도 상록농업생명과학대상 등 시상식
+
+이 두개가 제목이야.
+실제 문서에서는 페이지당 10개씩 있는데, 이것은 너가 판단해.
+
+각 페이지의 제목을 표 형태로 정리해 줘.
+
+1페이지가 끝나면 2페이지, 3페이지 처럼 순차적으로 하는데
+시스템에 부담을 줄이기 위해 5초마다 한번 요청해.
+curl을 이용해서 처리해 줘.
+
+
+```
