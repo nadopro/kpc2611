@@ -612,3 +612,16 @@ CREATE TABLE iot (
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;
 ```
+
+**시뮬레이터**
+
+```
+$tem = rand(250, 260) /10
+gen.php파일을 만들고 싶어.
+랜덤하게 온도와 습도를 발생하고 싶어.
+온도는 25-26도 사이,
+습도는 70-71% 사이
+랜덤하게 발생 두 값을 직전에 만든 iot 테이블에 넣는 작업을 할거야.
+자바스크립트로 3초마 setTimeout()을 활용해서
+반복적으로 작업을 하고 싶어.
+```

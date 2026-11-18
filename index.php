@@ -23,7 +23,7 @@ if (!is_string($cmd) || !preg_match('/\A[a-zA-Z0-9_-]+\z/D', $cmd)) {
 $pages = [
     '시큐어코딩' => ['injection', 'injection2', 'saveid', 'saveid2'],
     '시큐어코딩2' => ['relation', 'shell', 'command','chart', 'brute', 'brute2', 'brute3',],
-    'menu3' => ['menu3-1', 'menu3-2'],
+    '시큐어3' => ['gen', 'monitor'],
 ];
 
 // Page files must be placed in the same directory as index.php.
