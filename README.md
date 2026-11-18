@@ -662,3 +662,47 @@ WYSYWIG 게시판 형태로 만들거야.
 Bold, Italic, Underline 만 샘플로 만들거야.
 이 세개의 버튼은 Material-icons를 활용해 줘.
 ```
+
+**게시판 스키마**
+
+```
+게시판을 만들고 싶어.
+table: board
+filed는 다음과 같아.
+idx : integer, auto increment, primary key
+id : 작성자 id
+name : 작성자 이름
+gid : 게시글의 그룹번호
+thread: 그룹내에서 구분하기 위한 텍스트
+title : 게시판 제목
+notice : 1, 0 공지사항 여부
+content : 게시판 내용(plain text)
+hit : 읽은 횟수, 기본값 0
+file : 첨부파일이름
+fname: 파일의 원본이름 
+time : datetime
+```
+
+**결과***
+```sql
+CREATE TABLE board (
+    idx INT NOT NULL AUTO_INCREMENT,
+    id VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    gid INT NOT NULL DEFAULT 0,
+    thread VARCHAR(255) NOT NULL DEFAULT '',
+    title VARCHAR(255) NOT NULL,
+    notice TINYINT(1) NOT NULL DEFAULT 0,
+    content LONGTEXT DEFAULT NULL,
+    hit INT UNSIGNED NOT NULL DEFAULT 0,
+    file VARCHAR(255) DEFAULT NULL,
+    fname VARCHAR(255) DEFAULT NULL,
+    time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (idx),
+    INDEX idx_gid_thread (gid, thread),
+    INDEX idx_time (time)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
+```
