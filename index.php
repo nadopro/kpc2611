@@ -82,9 +82,9 @@ if ($cmd !== null && !is_file($pageFile)) {
     $ip4 = rand(0,255);
     $ip = $ip1 . "." . $ip2 . "." . $ip3 . "." . $ip4;
     
-    $work = $_SERVER['QUERY_STRING'] ;
-    $id = $_SESSION['id'];
- 
+    $work = $_SERVER['QUERY_STRING'] ; 
+    $id = $_SESSION['id'] ?? '';
+     
     $sql = "INSERT INTO log (ip, id, work, time)
                 values ('$ip', '$id', '$work', now()) ";
     mysqli_query($conn, $sql);
