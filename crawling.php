@@ -2,6 +2,10 @@
 // crawling.php: include via index.php?cmd=crawling
 // Seoul National University press-release titles, pages 1 through 10.
 // All network requests pass through index.php and are rate-limited in the browser.
+echo 'PHP 버전: ' . PHP_VERSION . '<br>';
+echo '설정 파일: ' . php_ini_loaded_file() . '<br>';
+echo 'cURL: ' . (extension_loaded('curl') ? '활성' : '비활성');
+
 
 if (!function_exists('snuCrawlTitles')) {
     function snuCrawlTitles(int $page): array
