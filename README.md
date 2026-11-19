@@ -21,7 +21,15 @@
 
 - [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
 
-* 만약 mysql 사용자 계정 추가가 안되는 경우 *
+**만약 mysql 사용자 계정 추가가 안되는 경우**
+
+- [X] 계정 추가 안될때
+- [X] curl을 이용한 크롤링 안될 때
+
+> 환경 변수에 추가
+> 시스템 변수 -> Path -> 새로 만들기(N)
+> c:/xampp/php
+>
 
 C:\xampp\phpMyAdmin\config.inc.php 파일의 아래와 같이
 

@@ -1,170 +1,243 @@
 <?php
-/**
- * command.php - KPC Secure Coding 교육용 MySQL 콘솔
- * index.php?cmd=command 에서 include하여 사용합니다.
- * index.php가 session_start()와 $conn(mysqli) 초기화를 수행해야 합니다.
- * OS 명령을 실행하는 웹셸이 아닌, 기존 DB 연결을 사용하는 SQL 콘솔입니다.
- */
+// Include through index.php?cmd=command_terminal.
+$terminalIsFetch = ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST'
+    && ($_POST['terminal_response'] ?? '') === 'json';
+$terminalReply = static function (string $message, string $prompt): void {
+    echo '<script type="application/json" id="db-terminal-response">',
+        json_encode(
+            ['message' => $message, 'prompt' => $prompt],
+            JSON_HEX_TAG | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR
+        ),
+        '</script>';
+};
 
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    echo '<div class="alert alert-danger">index.php를 통해 접근해 주세요.</div>';
+if (session_status() !== PHP_SESSION_ACTIVE || empty($_SESSION['id'])) {
+    if ($terminalIsFetch) {
+        $terminalReply('로그인 세션을 확인할 수 없습니다. 다시 로그인해 주세요.', 'DB 실습>');
+    } else {
+        echo '<p class="alert alert-warning">먼저 로그인해 주세요.</p>';
+    }
     return;
 }
 if (!isset($conn) || !($conn instanceof mysqli)) {
-    echo '<div class="alert alert-danger">DB 연결이 준비되지 않았습니다.</div>';
-    return;
-}
-if (empty($_SESSION['id'])) {
-    echo '<div class="alert alert-warning">먼저 로그인해 주세요.</div>';
-    return;
-}
-
-if (!isset($_SESSION['command_console']) || !is_array($_SESSION['command_console'])) {
-    $_SESSION['command_console'] = ['mysql_active' => false, 'database' => null];
-}
-if (empty($_SESSION['command_csrf'])) {
-    $_SESSION['command_csrf'] = bin2hex(random_bytes(32));
-}
-
-$state =& $_SESSION['command_console'];
-$input = '';
-$output = '';
-$error = false;
-
-// SELECT 등 조회 결과는 탭 구분 텍스트로 출력합니다.
-$formatResult = static function (mysqli_result $result): string {
-    $fields = $result->fetch_fields();
-    $headers = array_map(static fn($field) => $field->name, $fields);
-    $lines = [implode("\t", $headers)];
-    $rows = 0;
-    while ($row = $result->fetch_row()) {
-        $values = array_map(static function ($value): string {
-            if ($value === null) return 'NULL';
-            if (!is_scalar($value)) return '[value]';
-            return str_replace(["\r", "\n", "\t"], [' ', ' ', ' '], (string)$value);
-        }, $row);
-        $lines[] = implode("\t", $values);
-        $rows++;
-        if ($rows >= 200) {
-            $lines[] = '(화면 출력은 최대 200행으로 제한됩니다.)';
-            break;
-        }
+    if ($terminalIsFetch) {
+        $terminalReply('index.php에서 DB 연결을 초기화하지 못했습니다.', 'DB 실습>');
+    } else {
+        echo '<p class="alert alert-danger">DB 연결이 준비되지 않았습니다.</p>';
     }
-    $result->free();
-    $lines[] = "\n{$rows} row(s) shown";
-    return implode("\n", $lines);
+    return;
+}
+
+$terminalEscape = static fn(string $value): string =>
+    htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+$_SESSION['db_terminal_token'] ??= bin2hex(random_bytes(32));
+$terminalActive = !empty($_SESSION['db_terminal_active']);
+$terminalOutput = '';
+
+// Accept a single SELECT against a table in the selected database.
+$terminalSelect = static function (string $sql): ?string {
+    $identifier = '(?:[\p{L}_][\p{L}\p{N}_]*|' . '\x60[\p{L}\p{N}_ -]+\x60)';
+    $columnList = $identifier . '(?:\s*,\s*' . $identifier . ')*';
+    $aggregate = '(?:COUNT\s*\(\s*\*\s*\)|(?:COUNT|SUM|AVG|MIN|MAX)\s*\(\s*'
+        . $identifier . '\s*\))';
+    $item = '(?:' . $identifier . '|' . $aggregate . ')(?:\s+AS\s+' . $identifier . ')?';
+    // Only doubled apostrophes can escape quotes. Backslashes and controls are excluded.
+    $literal = <<<'SQL_LITERAL'
+(?:-?[0-9]+(?:\.[0-9]+)?|NULL|'(?:[^'\\\x00-\x1F]|'')*')
+SQL_LITERAL;
+    $predicate = $identifier . '(?:\s*(?:<=|>=|<>|!=|=|<|>)\s*' . $literal
+        . '|\s+(?:NOT\s+)?LIKE\s+' . $literal . '|\s+IS\s+(?:NOT\s+)?NULL)';
+    $orderItem = $identifier . '(?:\s+(?:ASC|DESC))?';
+    $pattern = '~\ASELECT\s+(?:DISTINCT\s+)?(?:\*|' . $item . '(?:\s*,\s*' . $item . ')*)'
+        . '\s+FROM\s+' . $identifier
+        . '(?:\s+WHERE\s+' . $predicate . '(?:\s+(?:AND|OR)\s+' . $predicate . ')*)?'
+        . '(?:\s+GROUP\s+BY\s+' . $columnList . ')?'
+        . '(?:\s+ORDER\s+BY\s+' . $orderItem . '(?:\s*,\s*' . $orderItem . ')*)?'
+        . '(?:\s+LIMIT\s+(?<limit>[0-9]{1,3})(?:\s+OFFSET\s+[0-9]{1,7})?)?\z~iu';
+
+    if (preg_match($pattern, $sql, $matches) !== 1) {
+        return null;
+    }
+
+    return isset($matches['limit']) ? $sql : $sql . ' LIMIT 200';
 };
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $token = $_POST['csrf'] ?? '';
-    if (!is_string($token) || !hash_equals($_SESSION['command_csrf'], $token)) {
-        $error = true;
-        $output = '잘못된 요청입니다. 화면을 새로고침해 주세요.';
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
+    $token = $_POST['terminal_token'] ?? '';
+    $submitted = $_POST['terminal_input'] ?? '';
+    if (!is_string($token) || !hash_equals($_SESSION['db_terminal_token'], $token)) {
+        $terminalOutput = '요청을 확인할 수 없습니다. 페이지를 새로고침해 주세요.';
+    } elseif (!is_string($submitted) || strlen($submitted) > 3000) {
+        $terminalOutput = '명령이 너무 깁니다.';
     } else {
-        $input = trim((string)($_POST['command'] ?? ''));
-        if ($input === '') {
-            $error = true;
-            $output = '명령을 입력해 주세요.';
-        } elseif (preg_match('/^mysql\s+-u\s+secure\s*$/i', $input)) {
-            // 이미 index.php가 인증한 DB 연결을 확인합니다.
-            // 실제 mysql.exe 신규 로그인이나 비밀번호 검증을 수행하지 않습니다.
-            try {
-                $r = $conn->query('SELECT USER() AS login_user, CURRENT_USER() AS grant_user, VERSION() AS server_version, DATABASE() AS db_name');
-                $info = $r->fetch_assoc();
-                $r->free();
-                $loginUser = (string)$info['login_user'];
-                $account = explode('@', $loginUser, 2)[0];
-                if (strcasecmp($account, 'secure') !== 0) {
-                    $state['mysql_active'] = false;
-                    $error = true;
-                    $output = "secure 계정 연결을 확인할 수 없습니다.\n기존 DB 연결 계정: {$loginUser}\nindex.php의 DB 설정을 확인하세요.";
+        $sql = trim($submitted);
+        if (str_ends_with($sql, ';')) {
+            $sql = rtrim(substr($sql, 0, -1));
+        }
+        $command = strtolower(preg_replace('/[ \t]+/', ' ', $sql));
+
+        try {
+            if ($command === 'exit' || $command === 'quit' || $command === '\q') {
+                $terminalActive = false;
+                unset($_SESSION['db_terminal_active']);
+                $terminalOutput = 'Bye';
+            } elseif ($command === 'mysql -u secure') {
+                if (!$conn->select_db('secure')) {
+                    throw new RuntimeException('Could not select secure: ' . $conn->error);
+                }
+                $terminalActive = true;
+                $_SESSION['db_terminal_active'] = true;
+                $terminalOutput = "MariaDB 조회 실습 콘솔\n"
+                    . "Server version: {$conn->server_info}\n"
+                    . "Current database: secure\n"
+                    . '명령 목록은 help를 입력하세요.';
+            } elseif (!$terminalActive) {
+                $terminalOutput = 'mysql -u secure를 입력해 조회 실습을 시작하세요.';
+            } elseif ($command === 'help' || $command === '\h') {
+                $terminalOutput = "SHOW TABLES;\nSELECT * FROM 테이블명 LIMIT 10;\n"
+                    . "SELECT 컬럼명 FROM 테이블명 WHERE 컬럼명 IS NOT NULL ORDER BY 컬럼명;\n"
+                    . "SELECT COUNT(*) AS total FROM 테이블명;\n"
+                    . "SELECT DATABASE();\nSELECT VERSION();\nSELECT CONNECTION_ID();\nSELECT 1;\nexit";
+            } else {
+                $query = match ($command) {
+                    'show tables' => 'SHOW TABLES',
+                    'select database()' => 'SELECT DATABASE()',
+                    'select version()' => 'SELECT VERSION()',
+                    'select connection_id()' => 'SELECT CONNECTION_ID()',
+                    'select 1' => 'SELECT 1',
+                    default => $terminalSelect($sql),
+                };
+                if ($query === null) {
+                    $terminalOutput = '단일 테이블 SELECT를 지원합니다. 사용 예는 help에서 확인하세요.';
                 } else {
-                    $state['mysql_active'] = true;
-                    $state['database'] = $info['db_name'];
-                    $output = "Welcome to the MySQL/MariaDB practice monitor.\n"
-                        . "Connection: 기존 index.php DB 연결 재사용\n"
-                        . "Logged in as: {$loginUser}\n"
-                        . "Grant account: {$info['grant_user']}\n"
-                        . "Server version: {$info['server_version']}\n"
-                        . "Current database: " . ($info['db_name'] ?: '(none)') . "\n\nmysql>";
+                    if (!$conn->select_db('secure')) {
+                        throw new RuntimeException('Could not select secure: ' . $conn->error);
+                    }
+                    $result = $conn->query($query);
+                    if (!($result instanceof mysqli_result)) {
+                        throw new RuntimeException('Query did not return rows: ' . $conn->error);
+                    }
+                    $headers = array_map(static fn($field): string => $field->name, $result->fetch_fields());
+                    $lines = [implode("\t", $headers)];
+                    $shown = 0;
+                    while ($shown < 200 && ($row = $result->fetch_row()) !== null) {
+                        $cells = array_map(static fn($value): string =>
+                            $value === null ? 'NULL' : str_replace(["\r", "\n", "\t"], ' ', (string) $value),
+                            $row
+                        );
+                        $lines[] = implode("\t", $cells);
+                        $shown++;
+                    }
+                    $lines[] = $result->num_rows > $shown
+                        ? "{$shown} / {$result->num_rows} row(s) shown"
+                        : "{$shown} row(s)";
+                    $result->free();
+                    $terminalOutput = implode("\n", $lines);
                 }
-            } catch (mysqli_sql_exception $e) {
-                $state['mysql_active'] = false;
-                $error = true;
-                $output = 'DB 연결 확인 실패: ' . $e->getMessage();
             }
-        } elseif (preg_match('/^mysql\b/i', $input)) {
-            $error = true;
-            $output = "이 실습 화면의 접속 형식은 mysql -u secure 입니다.\n실제 mysql.exe 로그인 또는 -p 비밀번호 프롬프트는 제공하지 않습니다.";
-        } elseif (preg_match('/^(exit|quit|\\\\q)\s*;?$/i', $input)) {
-            $state['mysql_active'] = false;
-            $state['database'] = null;
-            $output = "Bye\n(MySQL 실습 콘솔 종료)";
-        } elseif (preg_match('/^php\s+-v\s*$/i', $input)) {
-            $output = 'PHP ' . PHP_VERSION . "\nSAPI: " . PHP_SAPI . "\nOS: " . PHP_OS_FAMILY;
-        } elseif (preg_match('/^php\s+-m\s*$/i', $input)) {
-            $output = implode("\n", get_loaded_extensions());
-        } elseif (
-            preg_match('~^(?:php|(?:[A-Za-z]:[\\\\/][^\r\n"<>|]+[\\\\/])?php\.exe)\s+-r\s+["\']phpinfo\(\);["\']\s*$~i', $input)
-            || preg_match('~^php\s+-r\s+["\']phpinfo\(\);["\']\s*$~i', $input)
-        ) {
-            ob_start();
-            phpinfo(INFO_GENERAL | INFO_CONFIGURATION | INFO_MODULES);
-            $html = (string)ob_get_clean();
-            $output = trim(html_entity_decode(strip_tags(preg_replace('~</(?:tr|h[1-6]|p|li)>~i', "\n", $html)), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
-        } elseif (!$state['mysql_active']) {
-            $error = true;
-            $output = "MySQL 실습 콘솔에 접속하지 않았습니다.\n먼저 mysql -u secure 를 입력하세요.\n참고: 운영체제 임의 명령 실행 기능은 포함되지 않습니다.";
-        } else {
-            try {
-                // 매 요청에 DB 연결은 새로 생성될 수 있어 선택 DB를 복원합니다.
-                if (is_string($state['database']) && $state['database'] !== '') {
-                    $conn->select_db($state['database']);
-                }
-                // mysql CLI 관례: 마지막 세미콜론을 붙이지 않아도 SQL 실행.
-                $sql = preg_replace('/;\s*$/', '', $input);
-                $result = $conn->query($sql);
-                if ($result instanceof mysqli_result) {
-                    $output = $formatResult($result);
-                } else {
-                    $output = 'Query OK, ' . $conn->affected_rows . ' row(s) affected.';
-                }
-                $dbResult = $conn->query('SELECT DATABASE() AS db_name');
-                $dbRow = $dbResult->fetch_assoc();
-                $dbResult->free();
-                $state['database'] = $dbRow['db_name'];
-                $output .= "\n\nmysql>";
-            } catch (mysqli_sql_exception $e) {
-                $error = true;
-                $output = 'SQL Error: ' . $e->getMessage() . "\n\nmysql>";
-            }
+        } catch (Throwable $exception) {
+            error_log('DB terminal: ' . $exception->getMessage());
+            $terminalOutput = 'DB 요청에 실패했습니다. secure 데이터베이스와 연결 계정의 권한을 확인하세요.';
         }
     }
 }
+
+$terminalPrompt = $terminalActive ? 'MariaDB [secure]>' : 'DB 실습>';
+if ($terminalIsFetch) {
+    $terminalReply($terminalOutput, $terminalPrompt);
+    return;
+}
 ?>
-<div class="container py-4">
-    <div class="card border-0 shadow-sm">
-        <div class="card-header text-white" style="background-color:#46765c;">
-            <h4 class="mb-0">Command 실습 콘솔</h4>
-        </div>
-        <div class="card-body">
-            <div class="small text-muted mb-3">
-                <?= !empty($state['mysql_active']) ? 'MySQL 콘솔 연결 상태 (기존 DB 연결 사용)' : 'MySQL 콘솔 미접속' ?>
-                <?php if (!empty($state['database'])): ?>
-                    · DB: <?= htmlspecialchars((string)$state['database'], ENT_QUOTES, 'UTF-8') ?>
-                <?php endif; ?>
-            </div>
-            <form method="post" action="index.php?cmd=command">
-                <input type="hidden" name="csrf" value="<?= htmlspecialchars($_SESSION['command_csrf'], ENT_QUOTES, 'UTF-8') ?>">
-                <label for="command-input" class="form-label fw-bold">명령 입력</label>
-                <textarea id="command-input" name="command" class="form-control font-monospace" rows="3" spellcheck="false" placeholder="mysql -u secure 또는 SQL 입력" required><?= htmlspecialchars($input, ENT_QUOTES, 'UTF-8') ?></textarea>
-                <button type="submit" class="btn btn-success mt-3">실행</button>
-            </form>
-            <hr>
-            <h5>실행 결과</h5>
-            <pre class="p-3 rounded" style="background:#17241c;color:<?= $error ? '#ffaaaa' : '#b8f5c7' ?>;min-height:230px;max-height:550px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;"><?= htmlspecialchars($output, ENT_QUOTES, 'UTF-8') ?></pre>
-            <p class="small text-muted mb-0">사용 예: mysql -u secure → SHOW DATABASES; → USE test; → SHOW TABLES; → exit<br>php -v, php -m, php -r "phpinfo();"도 시연할 수 있습니다. PHP 정보는 웹서버 환경의 출력입니다. 실제 OS 명령이나 mysql.exe를 실행하지 않습니다.</p>
-            <p class="small text-danger mt-2 mb-0">교육 전용: 입력한 SQL은 연결 계정 권한으로 실제 실행됩니다. 운영 DB나 외부 공개 서버에서는 사용하지 마세요.</p>
-        </div>
+<section id="db-terminal">
+    <h3>MariaDB 대화형 조회 실습</h3>
+    <p><code>mysql -u secure</code>를 입력한 뒤 Enter를 누르세요.</p>
+    <div data-terminal-log class="bg-dark text-light rounded p-3 mb-2 font-monospace"
+         role="log" aria-label="콘솔 실행 기록" tabindex="0"
+         style="min-height:min(18rem, 60vh);max-height:60vh;overflow:auto;">
+        <pre class="m-0 text-reset"
+             style="white-space:pre-wrap;overflow-wrap:anywhere;"><?=
+            $terminalEscape($terminalOutput)
+        ?></pre>
     </div>
-</div>
+    <form method="post" action="index.php?cmd=command_terminal" class="input-group">
+        <input type="hidden" name="terminal_token" value="<?= $terminalEscape($_SESSION['db_terminal_token']) ?>">
+        <label data-terminal-prompt for="db-terminal-input" class="input-group-text font-monospace"><?=
+            $terminalEscape($terminalPrompt)
+        ?></label>
+        <input id="db-terminal-input" name="terminal_input" class="form-control font-monospace"
+               autocomplete="off" spellcheck="false" maxlength="1000" required>
+        <button type="submit" class="btn btn-success">실행</button>
+    </form>
+</section>
+<script>
+(() => {
+    const terminal = document.getElementById('db-terminal');
+    const form = terminal.querySelector('form');
+    const input = terminal.querySelector('#db-terminal-input');
+    const prompt = terminal.querySelector('[data-terminal-prompt]');
+    const log = terminal.querySelector('[data-terminal-log]');
+    const history = [];
+    let position = 0;
+    let busy = false;
+
+    const append = (value) => {
+        const line = document.createElement('pre');
+        line.className = 'mt-0 mb-3 text-reset';
+        line.style.whiteSpace = 'pre-wrap';
+        line.style.overflowWrap = 'anywhere';
+        line.textContent = value;
+        log.append(line);
+        log.scrollTop = log.scrollHeight;
+    };
+
+    input.addEventListener('keydown', (event) => {
+        if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
+        if (history.length === 0 || busy) return;
+        event.preventDefault();
+        position = Math.max(0, Math.min(history.length, position + (event.key === 'ArrowUp' ? -1 : 1)));
+        input.value = history[position] ?? '';
+    });
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const command = input.value.trim();
+        if (busy || !command) return;
+        const data = new URLSearchParams(new FormData(form));
+        data.set('terminal_response', 'json');
+        busy = true;
+        input.readOnly = true;
+        history.push(command);
+        position = history.length;
+        append(prompt.textContent.trim() + ' ' + command);
+        try {
+            const response = await fetch(window.location.href, {
+                method: 'POST', body: data, credentials: 'same-origin', cache: 'no-store'
+            });
+            if (!response.ok) {
+                append('서버가 요청을 처리하지 못했습니다. HTTP ' + response.status);
+                return;
+            }
+            if (response.redirected) {
+                append('요청이 다른 페이지로 이동했습니다. 로그인 상태를 확인해 주세요.');
+                return;
+            }
+            const html = await response.text();
+            const payload = html.match(/<script type="application\/json" id="db-terminal-response">([^<]*)<\/script>/);
+            if (!payload) {
+                append('응답에서 콘솔 결과를 찾지 못했습니다. index.php의 cmd 경로와 PHP 오류 로그를 확인해 주세요.');
+                return;
+            }
+            const result = JSON.parse(payload[1]);
+            append(result.message);
+            prompt.textContent = result.prompt;
+            input.value = '';
+        } catch {
+            append('콘솔 응답을 읽지 못했습니다. 네트워크 연결과 PHP 오류 로그를 확인해 주세요.');
+        } finally {
+            busy = false;
+            input.readOnly = false;
+            input.focus();
+        }
+    });
+})();
+</script>
