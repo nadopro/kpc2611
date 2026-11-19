@@ -184,14 +184,57 @@ if ($isRefresh && $tab !== 1) {
         <tr><th>idx</th><th>ip</th><th>id</th><th>work</th><th>time</th><th class="text-center">flag</th><th class="text-center">비고</th></tr>
       </thead>
       <tbody>
+        <?php 
+        function ip2nation($ip)
+        {
+            // $ip = 1.2.3.4;
+            $splitIP = explode(".", $ip); // $ip[0] = 1, 
+            include "ip_files/$splitIP[0].php";
+            $code = ($splitIP[0] *256 * 256 * 256) 
+                    + ($splitIP[1] * 256 * 256)
+                    + ($splitIP[2] * 256)
+                    + ($splitIP[3]);
+
+            foreach($ranges as $key => $value) {
+                if($key <= $code) {
+                    if($ranges[$key][0] >= $code){
+                        $nation = $ranges[$key][1];
+                        break;
+                    }
+                }
+
+            }
+
+            if(!isset($nation)) {
+                $nation = "";
+            }
+
+            if(isset($nation) and $nation == "")
+                $nation = "noflag";
+
+            return "$nation"; // KR
+        }
+        ?>
+
       <?php foreach ($rows as $row): ?>
+        <?php 
+            $myip = $row['ip']; 
+            $nationalFlag = ip2nation($myip);
+            $nationFlag = "<img src='flags/$nationalFlag.gif'>";
+        ?>
+
         <tr>
           <td><?= (int)$row['idx'] ?></td>
           <td class="font-monospace"><?= logEscape($row['ip']) ?></td>
           <td><?= logEscape($row['id']) ?></td>
           <td class="log-work"><?= logEscape($row['work']) ?></td>
           <td class="text-nowrap"><?= logEscape($row['time']) ?></td>
-          <td class="text-center"><span class="text-muted" title="국기 표시 예정">—</span></td>
+          <td class="text-center"><span class="text-muted" title="국기 표시 예정">
+            <?php
+                echo "$nationFlag";
+            ?>
+
+          </span></td>
           <td class="text-center text-nowrap">
             <button type="button" class="btn btn-sm btn-outline-secondary log-ip-info" data-ip="<?= logEscape($row['ip']) ?>">IP 상세정보</button>
             <button type="button" class="btn btn-sm btn-outline-success log-map-view" data-ip="<?= logEscape($row['ip']) ?>">지도 보기</button>
