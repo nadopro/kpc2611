@@ -24,7 +24,7 @@ $pages = [
     '시큐어코딩' => ['injection', 'injection2', 'saveid', 'saveid2'],
     '시큐어코딩2' => ['relation', 'shell', 'command','chart', 'brute', 'brute2', 'brute3',],
     '시큐어3' => ['ipinfo', 'ipmap', 'log','crawling', 'fake', 'dice', 'board','editor','gen', 'monitor', 'join'],
-    '시큐어4' => ['log2', 'ipmap', 'log','crawling', 'fake', 'dice', 'board','editor','gen', 'monitor', 'join'],
+    '시큐어4' => ['network','log2', 'ipmap', 'log','crawling', 'fake', 'dice', 'board','editor','gen', 'monitor', 'join'],
 ];
 
 // Page files must be placed in the same directory as index.php.
@@ -77,10 +77,10 @@ if ($cmd !== null && !is_file($pageFile)) {
 
 <?php
     $ip = $_SERVER['REMOTE_ADDR'] ;
-    $ip1 = rand(0,255);
-    $ip2 = rand(0,255);
-    $ip3 = rand(0,255);
-    $ip4 = rand(0,255);
+    $ip1 = rand(11,13);
+    $ip2 = rand(22,25);
+    $ip3 = rand(1,3);
+    $ip4 = rand(1,100);
     $ip = $ip1 . "." . $ip2 . "." . $ip3 . "." . $ip4;
     
     $work = $_SERVER['QUERY_STRING'] ; 
