@@ -44,7 +44,7 @@ if (!function_exists('board_h')) {
             $escaped
         );
     }
-    function board_url(array $query = []): string { return 'index.php?' . http_build_query(array_merge(['cmd'=>'board'], $query)); }
+    function board_url(array $query = []): string { return 'index.php?' . http_build_query(array_merge(['cmd'=>'board2'], $query)); }
     function board_fetch(mysqli $db, int $idx): ?array {
         $s = $db->prepare('SELECT * FROM board WHERE idx=?');
         $s->bind_param('i', $idx); $s->execute();
@@ -57,7 +57,7 @@ if (!function_exists('board_h')) {
         while ($n > 0) { $n--; $out = chr(65 + ($n % 26)) . $out; $n = intdiv($n, 26); }
         return $out;
     }
-    function board_save_upload(array $up): array {
+    function board_save_upload(array $up, bool $isAdmin): array {
         if (($up['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) return ['', ''];
         if (($up['error'] ?? 99) !== UPLOAD_ERR_OK || !is_uploaded_file((string)$up['tmp_name'])) {
             throw new RuntimeException('첨부파일 업로드에 실패했습니다.');
@@ -66,31 +66,54 @@ if (!function_exists('board_h')) {
         $original = basename(str_replace('\\','/',(string)($up['name'] ?? '')));
         $original = preg_replace('/[\x00-\x1f\x7f]/u', '', $original) ?: 'file';
         $ext = strtolower(pathinfo($original, PATHINFO_EXTENSION));
+        // Only use a simple extension in the generated disk filename.
+        // This is a filename safety rule, not an upload type allowlist.
+        if ($ext !== '' && !preg_match('/\A[a-z0-9]{1,16}\z/D', $ext)) {
+            throw new RuntimeException('파일 확장자 형식이 올바르지 않습니다.');
+        }
+        $diskExt = $ext !== '' ? $ext : 'bin';
         $allowed = ['jpg'=>'image/jpeg','jpeg'=>'image/jpeg','png'=>'image/png','gif'=>'image/gif',
-                    'webp'=>'image/webp','pdf'=>'application/pdf','txt'=>'text/plain','zip'=>'application/zip'];
-        if (!isset($allowed[$ext])) throw new RuntimeException('허용된 파일 형식: jpg, jpeg, png, gif, webp, pdf, txt, zip');
-        if (in_array($ext, ['jpg','jpeg','png','gif','webp'], true)) {
+                    'webp'=>'image/webp','pdf'=>'application/pdf','txt'=>'text/plain','zip'=>'application/zip',
+                    'hwp'=>'application/octet-stream','hwpx'=>'application/zip',
+                    'xls'=>'application/octet-stream','xlsx'=>'application/zip',
+                    'ppt'=>'application/octet-stream','pptx'=>'application/zip',
+                    'doc'=>'application/octet-stream','docx'=>'application/zip'];
+        if (!$isAdmin && !isset($allowed[$ext])) {
+            throw new RuntimeException('허용된 파일 형식: jpg, jpeg, png, gif, webp, pdf, txt, zip, hwp, hwpx, xls, xlsx, ppt, pptx, doc, docx');
+        }
+        if (!$isAdmin && in_array($ext, ['jpg','jpeg','png','gif','webp'], true)) {
             $info = @getimagesize((string)$up['tmp_name']);
             if (!$info || ($info['mime'] ?? '') !== $allowed[$ext]) throw new RuntimeException('이미지 파일 형식을 확인할 수 없습니다.');
-        } else {
+        } elseif (!$isAdmin) {
             $mime = (new finfo(FILEINFO_MIME_TYPE))->file((string)$up['tmp_name']);
+            $zipMimes = ['application/zip','application/x-zip','application/x-zip-compressed','application/octet-stream'];
+            $oleMimes = ['application/vnd.ms-excel','application/vnd.ms-powerpoint','application/x-ole-storage','application/x-ole-storage2','application/CDFV2','application/octet-stream'];
             $valid = match ($ext) {
                 'pdf' => $mime === 'application/pdf',
                 'txt' => in_array($mime, ['text/plain','text/x-php'], true) === false && $mime === 'text/plain',
-                'zip' => in_array($mime, ['application/zip','application/x-zip','application/x-zip-compressed'], true),
+                'zip', 'hwpx', 'xlsx', 'pptx', 'docx' => str_starts_with((string)file_get_contents((string)$up['tmp_name'], false, null, 0, 4), 'PK'),
+                'hwp', 'xls', 'ppt', 'doc' => bin2hex((string)file_get_contents((string)$up['tmp_name'], false, null, 0, 8)) === 'd0cf11e0a1b11ae1',
                 default => false
             };
             if (!$valid) throw new RuntimeException('첨부파일의 실제 형식이 확장자와 다릅니다.');
         }
         $dir = __DIR__ . '/data/board';
         if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) throw new RuntimeException('첨부파일 폴더를 만들 수 없습니다.');
-        // Apache: never execute code from the upload directory.
+        // Apache defense-in-depth: disallow server-side executable files.
+        // This file is effective only if Apache permits .htaccess overrides.
         $htaccess = $dir . '/.htaccess';
-        if (!is_file($htaccess)) @file_put_contents($htaccess, "Options -ExecCGI\n<FilesMatch \"\\.(php[0-9]?|phtml|phar|cgi|pl|asp|aspx|jsp)$\">\nRequire all denied\n</FilesMatch>\n");
+        $rule = "Options -ExecCGI -Indexes\n"
+            . "<FilesMatch \"\\.(php[0-9]*|phtml|phar|cgi|pl|py|rb|asp|aspx|jsp|jspx|shtml|sh|bat|cmd|ps1|exe|dll|htaccess|htpasswd)$\">\nRequire all denied\n</FilesMatch>\n"
+            . "<FilesMatch \"\\.(html?|svg|xml|js|mjs)$\">\nForceType application/octet-stream\n</FilesMatch>\n";
+        if (!is_file($htaccess) || (string)@file_get_contents($htaccess) !== $rule) {
+            if (@file_put_contents($htaccess, $rule, LOCK_EX) === false) {
+                throw new RuntimeException('업로드 폴더의 접근 제한 설정을 저장할 수 없습니다.');
+            }
+        }
         // YYYYmmddHHMMss.ext. If same-second collision occurs, move forward a second.
         $target = '';
         for ($i=0; $i<100; $i++) {
-            $candidate = date('YmdHis', time()+$i) . '.' . $ext;
+            $candidate = date('YmdHis', time()+$i) . '.' . $diskExt;
             if (!file_exists($dir . '/' . $candidate)) { $target = $candidate; break; }
         }
         if ($target === '') throw new RuntimeException('첨부파일 이름을 생성하지 못했습니다.');
@@ -142,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (string)($_POST['board_action'] ?? 
                 $originalName = $old['fname'] ?? '';
                 $newFile = '';
                 if (!empty($_FILES['attachment']) && ($_FILES['attachment']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
-                    [$newFile, $newOriginal] = board_save_upload($_FILES['attachment']);
+                    [$newFile, $newOriginal] = board_save_upload($_FILES['attachment'], $boardIsAdmin);
                     $fileName = $newFile; $originalName = $newOriginal;
                 } elseif ($old && isset($_POST['remove_file'])) {
                     $fileName = ''; $originalName = '';
@@ -191,6 +214,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (string)($_POST['board_action'] ?? 
                 echo '<div class="alert alert-success">게시글이 저장되었습니다. <a href="' . board_h(board_url(['mode'=>'show','idx'=>$redirectIdx])) . '">글 보기</a></div>';
                 return;
             }
+            if ($action === 'blacklist') {
+                if (!$boardIsAdmin) throw new RuntimeException('관리자만 블랙리스트를 등록할 수 있습니다.');
+                $targetIdx = filter_var($_POST['idx'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+                if (!$targetIdx) throw new RuntimeException('게시글 번호가 올바르지 않습니다.');
+                $target = board_fetch($conn, (int)$targetIdx);
+                if (!$target) throw new RuntimeException('게시글을 찾을 수 없습니다.');
+                // Trust the IP recorded by the server when the post was written,
+                // never a client-supplied IP field.
+                $targetIp = trim((string)$target['ip']);
+                if (!filter_var($targetIp, FILTER_VALIDATE_IP)) {
+                    throw new RuntimeException('게시글에 유효한 IP 주소가 없습니다.');
+                }
+                // UNIQUE(ip) avoids duplicate entries. A duplicate must not reset
+                // the original registration time or accumulated reject count.
+                $s = $conn->prepare('INSERT INTO `black` (`ip`, `time`, `rejects`) VALUES (?, NOW(), 0) ON DUPLICATE KEY UPDATE `ip` = `ip`');
+                $s->bind_param('s', $targetIp);
+                $s->execute();
+                $created = $s->affected_rows === 1;
+                $s->close();
+                $_SESSION['board2_black_flash'] = $created
+                    ? $targetIp . ' IP를 블랙리스트에 등록했습니다.'
+                    : $targetIp . ' IP는 이미 블랙리스트에 등록되어 있습니다.';
+                echo '<script>location.replace(' . json_encode(board_url(['mode'=>'show','idx'=>(int)$targetIdx]), JSON_UNESCAPED_SLASHES) . ');</script>';
+                echo '<div class="alert alert-success">처리가 완료되었습니다. <a href="' . board_h(board_url(['mode'=>'show','idx'=>(int)$targetIdx])) . '">게시글로 돌아가기</a></div>';
+                return;
+            }
             if ($action === 'delete') {
                 $deleteIdx = max(0, (int)($_POST['idx'] ?? 0));
                 $old = $deleteIdx ? board_fetch($conn, $deleteIdx) : null;
@@ -207,8 +256,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (string)($_POST['board_action'] ?? 
         } catch (Throwable $e) {
             if ($conn->errno) error_log('board.php: ' . $e->getMessage());
             $boardError = $e instanceof RuntimeException ? $e->getMessage() : '처리 중 오류가 발생했습니다.';
-            $boardMode = $action === 'delete' ? 'delete' : 'write';
+            $boardMode = $action === 'delete' ? 'delete' : ($action === 'blacklist' ? 'show' : 'write');
             $boardSticky = $_POST;
+            if ($action === 'blacklist') $boardIdx = max(0, (int)($_POST['idx'] ?? 0));
         }
     }
 }
@@ -221,6 +271,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && (string)($_POST['board_action'] ?? 
 .board-file-image{max-width:100%;max-height:560px;object-fit:contain;border:1px solid #d9e6dd;border-radius:8px}
 @media(max-width:576px){.board-hide-mobile{display:none!important}.board-wrap{font-size:.95rem}}
 </style>
+<?php
+if (isset($_SESSION['board2_black_flash'])) {
+    $boardSuccess = (string)$_SESSION['board2_black_flash'];
+    unset($_SESSION['board2_black_flash']);
+}
+?>
 <div class="board-wrap">
   <div class="d-flex align-items-center justify-content-between mb-3">
     <h3 class="board-title mb-0">게시판</h3>
@@ -334,6 +390,15 @@ elseif ($boardMode === 'show'):
       <a class="btn btn-outline-secondary" href="<?= board_h(board_url(['mode'=>'list','page'=>$boardPage])) ?>">목록</a>
       <?php if ($boardLoggedIn): ?><a class="btn btn-success" href="<?= board_h(board_url(['mode'=>'write','ridx'=>$boardIdx])) ?>">답글</a><?php endif; ?>
     </div>
+    <?php if ($boardIsAdmin): ?>
+    <form method="post" action="<?= board_h(board_url(['mode'=>'show','idx'=>$boardIdx])) ?>"
+          onsubmit="return confirm('블랙리스트에 추가하시겠습니까?');" class="m-0">
+      <input type="hidden" name="board_action" value="blacklist">
+      <input type="hidden" name="csrf" value="<?= board_h($boardCsrf) ?>">
+      <input type="hidden" name="idx" value="<?= (int)$boardIdx ?>">
+      <button type="submit" class="btn btn-dark">블랙리스트</button>
+    </form>
+    <?php endif; ?>
     <?php if ($canEdit): ?><div class="d-flex gap-2">
       <a class="btn btn-outline-primary" href="<?= board_h(board_url(['mode'=>'write','uidx'=>$boardIdx])) ?>">수정</a>
       <a class="btn btn-outline-danger" href="<?= board_h(board_url(['mode'=>'delete','idx'=>$boardIdx])) ?>">삭제</a>
@@ -377,7 +442,8 @@ elseif ($boardMode === 'write'):
         <div class="mb-3"><label class="form-label" for="board-content-input">내용 (HTML 및 JavaScript 실습 가능)</label>
           <textarea class="form-control" id="board-content-input" name="content" rows="12" required><?= board_h($content) ?></textarea></div>
         <div class="mb-3"><label class="form-label" for="board-file-input">첨부파일 (최대 10MB)</label>
-          <input class="form-control" type="file" id="board-file-input" name="attachment" accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.txt,.zip">
+          <input class="form-control" type="file" id="board-file-input" name="attachment" <?= $boardIsAdmin ? '' : 'accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.txt,.zip,.hwp,.hwpx,.xls,.xlsx,.ppt,.pptx,.doc,.docx"' ?>>
+          <div class="form-text"><?= $boardIsAdmin ? '관리자: 파일 형식 제한 없음 (최대 10MB, 서버 실행은 제한)' : '허용 형식: jpg, jpeg, png, gif, webp, pdf, txt, zip, hwp, hwpx, xls, xlsx, ppt, pptx, doc, docx (최대 10MB)' ?></div>
           <?php if ($editing && $editing['file']): ?><div class="mt-2 small">현재 파일: <?= board_h($editing['fname']) ?>
             <label class="ms-2"><input type="checkbox" name="remove_file" value="1"> 기존 파일 제거</label></div><?php endif; ?>
         </div>

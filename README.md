@@ -1135,3 +1135,15 @@ CREATE TABLE black (
   DEFAULT CHARSET=utf8mb4
   COLLATE=utf8mb4_unicode_ci;
 ```
+
+게시판 만들기 (블랙리스트)
+
+```
+첨부한 board.php를 수정해서 board2.php를 만들고 싶어.
+이중에서 게시판 보기 기능만 바꾸면 돼.
+관리자로 접속한 경우, 게시글의 하단에 버튼 하나를 추가해야 해.
+<블랙리스트>
+이 버튼을 누르면 confirm('블랙리스트에 추가하시겠습니까?')라고 물어줘.
+
+이때, 조금 전에 만든 black 테이블에 추가해줘.
+```
