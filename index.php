@@ -24,7 +24,7 @@ $pages = [
     '시큐어코딩' => ['injection', 'injection2', 'saveid', 'saveid2'],
     '시큐어코딩2' => ['relation', 'shell', 'command','chart', 'brute', 'brute2', 'brute3',],
     '시큐어3' => ['ipinfo', 'ipmap', 'log','crawling', 'fake', 'dice', 'board','editor','gen', 'monitor', 'join'],
-    '시큐어4' => ['network','log2', 'ipmap', 'log','crawling', 'fake', 'dice', 'board','editor','gen', 'monitor', 'join'],
+    '시큐어4' => ['tree', 'network','log2', 'ipmap', 'log','crawling', 'fake', 'dice', 'board','editor','gen', 'monitor', 'join'],
 ];
 
 // Page files must be placed in the same directory as index.php.
