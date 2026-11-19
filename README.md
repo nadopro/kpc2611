@@ -1105,3 +1105,33 @@ https://observablehq.com/@d3/collapsible-tree
 원의 색을 채워주거나, 비워서 하위노드 여부를 쉽게 판단할 수 있게 해 줘.
 tree.php 파일을 이렇게 동작하도록 만들어 줘.
 ```
+
+**black list**
+
+```
+블랙리스트 ip 주소를 관리하기 위한 black을 스키마로 만들고 싶어.
+idx : integer, auto_increment, primary key,
+ip : ip address
+time : datetime,
+rejects int default '0'
+
+이때 rejects는 목록에 추가된 후, 차단되는 회수를 추가할 목적이야.
+black 테이블의 스키마를 제시해
+
+```
+
+**result**
+
+```sql
+CREATE TABLE black (
+    idx INT NOT NULL AUTO_INCREMENT,
+    ip VARCHAR(45) NOT NULL,
+    time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    rejects INT NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (idx),
+    UNIQUE KEY uq_black_ip (ip)
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
+```
