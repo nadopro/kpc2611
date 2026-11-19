@@ -959,3 +959,40 @@ tab 2일때와 동작은 거의 같아.
 
 
 ```
+
+https://www.daum.net/
+
+**enum**
+
+```c
+    enum error_code {
+        Trying = 100, Ringing = 180,
+        OK = 200,
+        BadRequest = 400,
+        AuthError, Forbidden, NotFound, MethodNotAllowed, ..
+    }
+```
+
+tElephoneNUMber : ENUM
+
+
+**ip --> information**
+
+IP 주소 정보 웹으로 얻어오기
+http://ip-api.com
+
+
+```
+http://ip-api.com/json/1.2.3.4
+와 같이 ip주소를 입력하면 JSON으로 가져오는 API가 있어.
+다음과 같은 형태로 가져오고 있어.
+
+{"status":"success","country":"Australia","countryCode":"AU","region":"QLD","regionName":"Queensland","city":"South Brisbane","zip":"4101","lat":-27.4767,"lon":153.017,"timezone":"Australia/Brisbane","isp":"Resource Quality Assurance","org":"Resource Quality Assurance","as":"","query":"1.2.3.4"}
+
+이것을 프로그램으로 만들기 위해 ipinfo.php파일을 만들고 싶어.
+
+상단에는 IP를 입력받고, "실행"버튼을 누르면 하단에
+JSON으로 가져오는 프로그램 예제를 만들어줘.
+출력을 보기 좋게 PRETTY_PRINT해서 보여줘.
+
+```
