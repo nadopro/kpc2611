@@ -1350,3 +1350,14 @@ windows 11에서 xampp환경이야.
 이 파일은 index.php?cmd=resource 이렇게 접속하는데
 3초마다 새로고침해서 새로운 CPU, Memory 점유율을 확인하고 싶어.
 ```
+
+
+**예제**
+```
+    int *ptr = null;
+    int age =3;
+
+    ptr = &age;
+
+    메모리 크기의 한계
+```
