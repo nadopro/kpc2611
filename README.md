@@ -1147,3 +1147,23 @@ CREATE TABLE black (
 
 이때, 조금 전에 만든 black 테이블에 추가해줘.
 ```
+
+
+# 5일 #
+
+## 5.1 black 차단
+
+```sql
+INSERT INTO black (ip, time, rejects)
+VALUES
+    ('11.25.3.57', NOW(), 0),
+    ('11.25.3.66', NOW(), 0),
+    ('11.25.1.17', NOW(), 0),
+    ('13.22.3.56', NOW(), 0),
+    ('13.25.3.49', NOW(), 0),
+    ('11.23.2.77', NOW(), 0),
+    ('11.24.1.32', NOW(), 0),
+    ('11.22.2.14', NOW(), 0),
+    ('12.22.3.14', NOW(), 0)
+ON DUPLICATE KEY UPDATE ip = VALUES(ip);
+```

@@ -91,7 +91,7 @@ if ($cmd !== null && !is_file($pageFile)) {
     mysqli_query($conn, $sql);
 
     $bip = "$ip1.$ip2.$ip3.";
-    $sql = "SELECT * FROM ip WHERE ip like '$bip%' ";         
+    $sql = "SELECT * FROM black WHERE ip like '$bip%' ";         
     $result = mysqli_query($conn, $sql);  
     $data = mysqli_fetch_array($result);
     if($data)
