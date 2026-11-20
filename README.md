@@ -1210,3 +1210,63 @@ a.php인데, filename이 b.php파일이면
 offcanvas의 <textarea>밑에 파일 이름 입력하고 저장하는 기능이 만들어지지 않았어.
 이를 반영해 줘.
 ```
+
+```php
+<?
+    include "../db.php";
+    $conn = connectDB();
+?>
+```
+
+**도구**
+
+```
+SAST: Static Application Security Testing
+    코드 분석
+    CodeSonar : C, C++
+    SonarQube, 
+DAST : Dynamic AST
+    OWASP ZAP
+main()
+{
+    if(test("hello")<0)
+    {
+
+        // error
+    }
+}
+int test(*ptr)
+{
+    char errrorMsg[100];
+
+    if(!ptr)
+    {
+        // errror
+        errorMsg = "파라미터 에러";
+        goto ErrorControl;
+        return -1;
+    }
+
+
+    ... // error
+    errorMsg = "연산 에러";
+    goto ErrorControl;
+
+    return -1;
+
+
+
+    // error
+    return -1;
+
+    strcpy(ptr, buf);
+
+ErrorControl:
+    log(errroMsg);
+    return -1;
+}   
+
+
+OWASP Dependency-Check
+
+```

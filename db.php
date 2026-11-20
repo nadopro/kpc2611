@@ -16,4 +16,8 @@ function connectDB(): mysqli
 
     return $conn;
 }
+
+    $users = "users1";
+    // db.inc.php
+    // $sql = "select * from $users";
 ?>

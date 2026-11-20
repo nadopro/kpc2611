@@ -44,8 +44,7 @@ if (!function_exists('ftp_h')) {
     }
     function ftp_hidden(string $name): bool {
         return str_starts_with($name, '.') || in_array(strtolower($name), [
-            'db.php', 'config.php', 'configuration.php', 'wp-config.php',
-            '.env', 'sess', 'session', 'sessions', 'vendor', 'node_modules'
+           
         ], true);
     }
 }
