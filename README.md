@@ -1339,3 +1339,14 @@ void test()
 
     이렇게해서 DDoS 공격이 성능에 미치는 영향을 측정하는 프로그램을 만들어줘.
 ```
+
+**resource**
+
+```
+현재 내 시스템은 PHP로 동작하는데,
+windows 11에서 xampp환경이야.
+그런데 CPU, Memory 사용률을 확인하는 resource.php 파일을 만들고 싶어.
+윈도우이기 때문에 필요한 경우에는 파워쉘을 이용해서 수행하고 싶어.
+이 파일은 index.php?cmd=resource 이렇게 접속하는데
+3초마다 새로고침해서 새로운 CPU, Memory 점유율을 확인하고 싶어.
+```
