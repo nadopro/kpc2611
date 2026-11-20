@@ -1,1 +1,1 @@
-id|s:5:"admin";name|s:9:"관리자";level|i:9;gen_csrf|s:64:"8205b0e643205e52a241d28133c2e409da6ccc6f6a84a9058159caafa39c2700";
+id|s:5:"admin";name|s:9:"관리자";level|i:9;gen_csrf|s:64:"8205b0e643205e52a241d28133c2e409da6ccc6f6a84a9058159caafa39c2700";ftp_csrf|s:64:"5ad3798aa847549a0d84f828e2a01ddec5a3d365fe285f0d0283301fade356b0";

@@ -24,7 +24,7 @@ $pages = [
     '시큐어코딩' => ['injection', 'injection2', 'saveid', 'saveid2'],
     '시큐어코딩2' => ['relation', 'shell', 'command','chart', 'brute', 'brute2', 'brute3',],
     '시큐어3' => ['ipinfo', 'ipmap', 'log','crawling', 'fake', 'dice', 'board','editor','gen', 'monitor', 'join'],
-    '시큐어4' => ['tree', 'network','log2', 'ipmap', 'board2','editor','gen', 'monitor', 'join'],
+    '시큐어4' => ['ftp', 'tree', 'network','log2', 'ipmap', 'board2','editor','gen', 'monitor', 'join'],
 ];
 
 // Page files must be placed in the same directory as index.php.
@@ -97,16 +97,16 @@ if ($cmd !== null && !is_file($pageFile)) {
     if($data)
     {
         // black rejects 증가
-        $sql = "UPDATE ip SET rejects=rejects+1 WHERE ip like '$bip%' ";
+        $sql = "UPDATE black SET rejects=rejects+1 WHERE ip like '$bip%' ";
         mysqli_query($conn, $sql);
         // block
         ?>
         <script>
             //alert("접속이 차단되었습니다.");
-            location.href = "https://warning.or.kr";
+            //location.href = 'https://warning.or.kr';
         </script>
         <?php
-        exit;
+        //exit;
     }           
 ?>
        <nav class="navbar navbar-expand-lg navbar-dark site-navbar" aria-label="주 메뉴">

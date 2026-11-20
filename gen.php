@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['gen_action'] ?? '') === 'i
     error.classList.remove('d-none');
   };
   const schedule = () => {
-    if (active) timer = setTimeout(sendReading, 3000);
+    if (active) timer = setTimeout(sendReading, 100);
   };
 
   async function sendReading() {
