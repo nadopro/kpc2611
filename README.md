@@ -1270,3 +1270,29 @@ ErrorControl:
 OWASP Dependency-Check
 
 ```
+
+**Performance**
+
+```
+http://localhost/data/
+이런식으로 접속하면 파일의 링크가 보이는 문제가 있어.
+이를 해결하기 위한 방법으로는 .htaccess를 최상위 디렉토리 넣어 설정하는 방법이 있고,
+나머지 하나는 아파치 설정을 바꾸는 방법이 있어.
+첫번째 방법을 위한 .htaccess 파일을 만들어줘.
+아파치 설정으로 해결하는 방법도 추가적으로 설명해 줘.
+
+```
+
+**.htaccess**
+
+최상위 디렉토리에  
+
+Options -Indexes
+
+
+**backup**
+
+mysql -u secure secure -p
+
+mysqldump -u secure secure -p >secure-2026-11-20-fin.db.sql
+
