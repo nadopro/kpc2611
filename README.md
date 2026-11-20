@@ -1296,3 +1296,46 @@ mysql -u secure secure -p
 
 mysqldump -u secure secure -p >secure-2026-11-20-fin.db.sql
 
+**clean code**
+
+```c
+void test()
+{
+    int     age_i; // iAge
+    float   level; // fLevel
+    double  score; // dScore
+    // mAge
+
+    typedef struct tcp_t 
+    {
+
+    }
+
+    age = age + 1;
+}
+```
+
+**thread**
+
+```
+    slow.php 파일을 하나 만들거야.
+    index.php?cmd=slow&com=1&count=3
+    이런 형태로 호출할거야.
+    1초동안 sleep한 후,
+    com = 1, count = 3이라 출력하는 코드야.
+    또, 화면에 측정된 시간을 초 단위와 ms 단위로도 출력해줘.
+    
+
+    attack.php 파일을 만들거야.
+    상단에 두개의 입력창이 있어.
+    하나는 컴퓨터갯수를 1~50개까지 결정할 수 있고, 기본값은 10개야.
+    하나는 실행횟수를 1~30회까지 결정할 수 있고, 기본값은 5회야.
+    그 옆에 "실행" 버튼을 클릭하면 동작하는 코드야.
+    이 파일은 공격하는 PC개수와 공격회수를 입력받아서
+    DDoS 흉내만 내려고 하는거야.
+    자바스크립트로 fetch()를 반복적으로 수행해서
+    시스템에 미치는 영향을 보고 싶어.
+    index.php?cmd=sleep&com=컴퓨터번호&count=실행회차
+
+    이렇게해서 DDoS 공격이 성능에 미치는 영향을 측정하는 프로그램을 만들어줘.
+```
