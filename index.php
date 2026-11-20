@@ -89,8 +89,25 @@ if ($cmd !== null && !is_file($pageFile)) {
     $sql = "INSERT INTO log (ip, id, work, time)
                 values ('$ip', '$id', '$work', now()) ";
     mysqli_query($conn, $sql);
-                
-               
+
+    $bip = "$ip1.$ip2.$ip3.";
+    $sql = "SELECT * FROM ip WHERE ip like '$bip%' ";         
+    $result = mysqli_query($conn, $sql);  
+    $data = mysqli_fetch_array($result);
+    if($data)
+    {
+        // black rejects 증가
+        $sql = "UPDATE ip SET rejects=rejects+1 WHERE ip like '$bip%' ";
+        mysqli_query($conn, $sql);
+        // block
+        ?>
+        <script>
+            //alert("접속이 차단되었습니다.");
+            location.href = "https://warning.or.kr";
+        </script>
+        <?php
+        exit;
+    }           
 ?>
        <nav class="navbar navbar-expand-lg navbar-dark site-navbar" aria-label="주 메뉴">
         <div class="container">
